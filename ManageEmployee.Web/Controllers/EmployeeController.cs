@@ -50,6 +50,11 @@ namespace ManageEmployee.Web.Controllers
         {
             try
             {
+                if (keyword.Length > 100)
+                {
+                    throw new ApplicationException("Search keyword must be less than 100 characters");
+                }
+
                 var employees = await _employeeService.GetEmployees(keyword);
 
                 var empViewModel = new EmployeeListViewModel
@@ -129,7 +134,9 @@ namespace ManageEmployee.Web.Controllers
 
                 await _employeeService.AddEmployee(request);
 
-                return RedirectToAction("EmployeeList");
+                TempData["SuccessMessage"] = "Employee added successfully.";
+
+                return RedirectToAction(nameof(AddEmployee));
             }
             catch (Exception ex)
             {
