@@ -36,6 +36,7 @@ The application supports:
 
 # Solution Structure
 
+```text
 ManageEmployeeSolution
 │
 ├── ManageEmployee.Web
