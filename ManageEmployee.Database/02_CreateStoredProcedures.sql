@@ -7,7 +7,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE   PROCEDURE [dbo].[SP_AddEmployee]
+CREATE OR ALTER PROCEDURE [dbo].[SP_AddEmployee]
 (
     @Name       NVARCHAR(100),
     @SSN        NVARCHAR(11),
@@ -111,7 +111,7 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[SP_GetEmployees]
+CREATE OR ALTER PROCEDURE [dbo].[SP_GetEmployees]
 	-- Add the parameters for the stored procedure here
 	@keyword NVARCHAR(100) = NULL
 AS
@@ -148,12 +148,12 @@ BEGIN
 	FROM dbo.Employee e
 	OUTER APPLY
 	(
-	    SELECT TOP 1
-	        Salary,
-	        Title
-	    FROM dbo.EmployeeSalary es
-	    WHERE es.EmployeeId = e.EmployeeId
-	    AND es.ToDate IS NULL
+		SELECT TOP 1
+		    Salary,
+		    Title
+		FROM dbo.EmployeeSalary es
+		WHERE es.EmployeeId = e.EmployeeId
+		ORDER BY es.FromDate DESC
 	) s
 	WHERE
 	    @keyword IS NULL

@@ -78,8 +78,8 @@ namespace ManageEmployee.Data.Repositories
                             Phone = reader.GetString(8),
                             JoinDate = reader.GetDateTime(9),
                             ExitDate = reader.IsDBNull(10) ? (DateTime?)null : reader.GetDateTime(10),
-                            Salary = reader.GetDecimal(11),
-                            Title = reader.GetString(12)
+                            Salary = reader.IsDBNull(11) ? 0 : reader.GetDecimal(11),
+                            Title = reader.IsDBNull(12) ? "N/A" : reader.GetString(12)
                         };
                         employees.Add(emp);
                     }

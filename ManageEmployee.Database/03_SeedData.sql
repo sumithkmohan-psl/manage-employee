@@ -288,33 +288,48 @@ AND oldSalary.FromDate
         < newSalary.FromDate
 AND oldSalary.ToDate IS NULL;
 
--- ADD EXIT DATES FOR SOME EMPLOYEES
+-- CLOSE CURRENT SALARY RECORDS
+-- FOR SOME EMPLOYEES
 
-UPDATE TOP (10) dbo.Employee
-SET ExitDate = DATEADD(
-                    DAY,
-                    ABS(CHECKSUM(NEWID())) % 365,
-                    JoinDate)
-WHERE ExitDate IS NULL
-AND JoinDate < DATEADD(YEAR, -1, GETDATE());
-
--- CLOSE CURRENT SALARY RECORDS FOR EXITED EMPLOYEES
-
-UPDATE es
-SET es.ToDate = nextSalary.FromDate
+UPDATE TOP (10) es
+SET es.ToDate =
+    CASE
+        WHEN DATEADD(
+                DAY,
+                365,
+                es.FromDate) > CAST(GETDATE() AS DATE)
+        THEN CAST(GETDATE() AS DATE)
+        ELSE DATEADD(
+                DAY,
+                365,
+                es.FromDate)
+    END
 FROM dbo.EmployeeSalary es
+WHERE es.ToDate IS NULL;
+
+-- UPDATE EMPLOYEE EXIT DATE
+-- BASED ON LAST SALARY END DATE
+
+UPDATE e
+SET e.ExitDate = s.LastToDate
+FROM dbo.Employee e
 INNER JOIN
 (
     SELECT
         EmployeeId,
-        MIN(FromDate) AS FromDate
+        MAX(ToDate) AS LastToDate
     FROM dbo.EmployeeSalary
+    WHERE ToDate IS NOT NULL
     GROUP BY EmployeeId
-    HAVING COUNT(*) > 1
-) nextSalary
-    ON es.EmployeeId = nextSalary.EmployeeId
-WHERE es.FromDate < nextSalary.FromDate
-AND es.ToDate IS NULL;
+) s
+    ON e.EmployeeId = s.EmployeeId
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM dbo.EmployeeSalary es
+    WHERE es.EmployeeId = e.EmployeeId
+    AND es.ToDate IS NULL
+);
 
 PRINT '100 employee records inserted successfully.';
 
