@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/ManageEmployee.Database/">
+    <File Path="ManageEmployee.Database/01_CreateTables.sql" />
+    <File Path="ManageEmployee.Database/02_CreateStoredProcedures.sql" />
+    <File Path="ManageEmployee.Database/03_SeedData.sql" />
+  </Folder>
+  <Project Path="ManageEmployee.Business/ManageEmployee.Business.csproj" />
+  <Project Path="ManageEmployee.Console/ManageEmployee.Console.csproj" />
+  <Project Path="ManageEmployee.Data/ManageEmployee.Data.csproj" />
+  <Project Path="ManageEmployee.Models/ManageEmployee.Models.csproj" />
+  <Project Path="ManageEmployee.Web/ManageEmployee.Web.csproj" Id="c9a56a28-c9d2-47fe-a3dc-d7e81f226e9a" />
+</Solution>
